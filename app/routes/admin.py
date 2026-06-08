@@ -72,16 +72,18 @@ def add_new_product():
         file = request.files['gambar']
         if file and allowed_file(file.filename):
             try:
-                # 🔥 TRICK: Mengunggah data biner file langsung ke Cloudinary tanpa menyentuh harddisk Vercel
+                # membaca data biner gambar secara mentah (stream bytes)
+                file_bytes = file.read()
+                
+                # kirim dalam bentuk bytes ke Cloudinary agar Vercel tidak crash
                 upload_result = cloudinary.uploader.upload(
-                    file,
+                    file_bytes,
                     folder="bimzcam_katalog",
                     resource_type="image"
                 )
-                # Ambil URL aman (https) hasil unggahan Cloudinary
                 filename_field = upload_result.get('secure_url')
             except Exception as upload_error:
-                return jsonify({"error": f"Gagal mengunggah gambar ke cloud Cloudinary: {str(upload_error)}"}), 500
+                return jsonify({"error": f"Gagal ke Cloudinary: {str(upload_error)}"}), 500
 
     connection = None
     try:
