@@ -45,18 +45,37 @@ def create_app():
     try:
         connection = get_db_connection()
         
-        # --- KODE BARU: Eksekusi schema.sql secara otomatis ---
+        # --- KODE PENYARING SCHEMA.SQL (ANTI-ERROR AIVEN) ---
         schema_path = os.path.join(os.path.dirname(app.root_path), 'database', 'schema.sql')
         if os.path.exists(schema_path):
             with open(schema_path, 'r', encoding='utf-8') as f:
-                sql_commands = f.read().split(';')
+                sql_file = f.read()
+                sql_commands = sql_file.split(';')
+                
                 with connection.cursor() as cursor:
                     for command in sql_commands:
-                        if command.strip():
-                            cursor.execute(command)
+                        clean_command = command.strip()
+                        
+                        # 1. Abaikan baris kosong atau baris komentar
+                        if not clean_command or clean_command.startswith('--'):
+                            continue
+                            
+                        # 2. PENTING: Lewati perintah CREATE DATABASE dan USE agar tidak di-block oleh Aiven
+                        if clean_command.upper().startswith('CREATE DATABASE') or clean_command.upper().startswith('USE '):
+                            print(f"[Database Cloud] Melewati perintah lingkungan lokal: {clean_command[:30]}...")
+                            continue
+                        
+                        # 3. Eksekusi perintah pembentukan tabel (CREATE TABLE, dsb.)
+                        try:
+                            cursor.execute(clean_command)
+                        except Exception as sql_err:
+                            print(f"[Database Warning] Perintah SQL gagal dieksekusi: {clean_command[:50]}... | Error: {sql_err}")
+                                
             connection.commit()
-            print("[Database] Berhasil inisialisasi tabel dari schema.sql otomatis!")
-        # ------------------------------------------------------
+            print("[Database] Berhasil inisialisasi seluruh tabel dari schema.sql otomatis!")
+        else:
+            print(f"[Database Warning] File schema.sql tidak ditemukan di lokasi: {schema_path}")
+        # ----------------------------------------------------------------------
 
         # Seeder bawaan kelompokmu
         hashed_pw = generate_password_hash('admin123')
