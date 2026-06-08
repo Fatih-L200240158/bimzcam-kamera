@@ -149,3 +149,48 @@ def remove_product(id):
     finally:
         if connection:
             connection.close()
+
+from werkzeug.security import generate_password_hash
+
+@admin_bp.route('/api/admin/profile/update', methods=['PUT'])
+@login_required
+def update_admin_profile():
+    data = request.get_json()
+    
+    if not data:
+        return jsonify({"error": "Data tidak ditemukan!"}), 400
+        
+    new_username = data.get('username')
+    new_password = data.get('password')
+    current_user_id = session.get('user_id') # Mengambil ID admin yang sedang login
+
+    if not new_username:
+        return jsonify({"error": "Username tidak boleh kosong!"}), 400
+
+    connection = None
+    try:
+        connection = get_db_connection()
+        with connection.cursor() as cursor:
+            
+            # KONDISI 1: Jika admin hanya ingin mengganti Username saja
+            if not new_password:
+                sql = "UPDATE users SET username = %s WHERE id = %s"
+                cursor.execute(sql, (new_username, current_user_id))
+            
+            # KONDISI 2: Jika admin ingin mengganti Username DAN Password sekaligus
+            else:
+                # Password baru WAJIB di-hash otomatis di sini agar fitur login tidak rusak
+                hashed_password = generate_password_hash(new_password)
+                sql = "UPDATE users SET username = %s, password_hash = %s WHERE id = %s"
+                cursor.execute(sql, (new_username, hashed_password, current_user_id))
+                
+        connection.commit()
+        return jsonify({"message": "Profil admin (username/password) berhasil diperbarui!"})
+        
+    except Exception as e:
+        if connection:
+            connection.rollback()
+        return jsonify({"error": f"Gagal memperbarui profil: {str(e)}"}), 500
+    finally:
+        if connection:
+            connection.close()

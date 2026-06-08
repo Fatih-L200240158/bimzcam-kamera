@@ -82,6 +82,72 @@ document.addEventListener("DOMContentLoaded", () => {
     let isEditMode = false;
     let currentEditProductId = null;
 
+    const profileModal = document.getElementById('profile-modal');
+    const btnMenuProfil = document.getElementById('menu-pengaturan-profil');
+    const closeProfileModal = document.getElementById('close-profile-modal');
+    const btnCancelProfile = document.getElementById('btn-cancel-profile');
+    const profileForm = document.getElementById('profile-form');
+
+    // 1. Fungsi Membuka Modal (Mengatasi Tombol Statis)
+    if (btnMenuProfil && profileModal) {
+        btnMenuProfil.addEventListener('click', () => {
+            profileModal.classList.add('show');
+            // Isi default username ke input saat modal terbuka
+            const usernameInput = document.getElementById('profile-username');
+            if (usernameInput) usernameInput.value = "admin"; 
+        });
+    }
+
+    // 2. Fungsi Menutup Modal
+    if (profileModal) {
+        const closeModal = () => {
+            profileModal.classList.remove('show');
+            if (profileForm) profileForm.reset();
+        };
+        if (closeProfileModal) closeProfileModal.addEventListener('click', closeModal);
+        if (btnCancelProfile) btnCancelProfile.addEventListener('click', closeModal);
+    }
+
+    // 3. Fungsi Kirim Data ke route/admin.py via Fetch PUT
+    if (profileForm) {
+        profileForm.addEventListener('submit', (e) => {
+            e.preventDefault(); // Mencegah halaman reload
+
+            const usernameValue = document.getElementById('profile-username').value;
+            const passwordValue = document.getElementById('profile-password').value;
+
+            // Membentuk payload JSON sesuai kebutuhan data.get() di Python
+            const payload = {
+                username: usernameValue,
+                password: passwordValue
+            };
+
+            // Menembak endpoint @admin_bp.route('/api/admin/profile/update')
+            fetch('/api/admin/profile/update', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json' // Wajib agar request.get_json() di Flask tidak None
+                },
+                body: JSON.stringify(payload)
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.error) {
+                    alert("Gagal: " + data.error);
+                } else {
+                    alert("Profil admin berhasil diperbarui!");
+                    profileModal.classList.remove('show');
+                    profileForm.reset();
+                    window.location.reload(); // Refresh halaman agar session baru terbaca
+                }
+            })
+            .catch(err => {
+                console.error("Error updating profile:", err);
+                alert("Terjadi kesalahan koneksi ke server!");
+            });
+        });
+    }
+    
     // Load Metrics
     const loadMetrics = () => {
       fetch("/api/admin/summary")
@@ -409,3 +475,30 @@ themeToggle.addEventListener('click', () => {
         localStorage.setItem('theme', 'dark');
     }
 });
+
+// Contoh fungsi saat tombol "Simpan Perubahan" di klik admin
+function simpanProfilBaru() {
+    const usernameInput = document.getElementById('input-username').value;
+    const passwordInput = document.getElementById('input-password').value; // Boleh dikosongkan jika gak mau ganti pw
+
+    fetch('/api/admin/profile/update', {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            username: usernameInput,
+            password: passwordInput
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.message) {
+            alert(data.message);
+            window.location.reload(); // Refresh halaman setelah sukses
+        } else {
+            alert("Error: " + data.error);
+        }
+    })
+    .catch(err => console.error("Gagal koneksi:", err));
+}

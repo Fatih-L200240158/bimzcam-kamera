@@ -3,16 +3,14 @@
 {% block title %}Administrator Panel - BimzCam{% endblock %}
 
 {% block content %}
-<!-- Full-Page Admin Sidebar Layout -->
 <div class="admin-layout" style="display:flex;">
-  <!-- Left sidebar navigation drawer -->
   <aside class="sidebar">
     <a href="/" class="sidebar-logo">
       BimzCam <span>Admin</span>
     </a>
     <ul class="sidebar-menu">
-      <li class="menu-item active">
-        <button>
+      <li class="menu-item active" id="menu-kelola-produk">
+        <button type="button">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <rect x="3" y="3" width="7" height="9"></rect>
             <rect x="14" y="3" width="7" height="5"></rect>
@@ -22,6 +20,17 @@
           Kelola Produk
         </button>
       </li>
+
+      <li class="menu-item" id="menu-pengaturan-profil">
+        <button type="button">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+            <circle cx="12" cy="7" r="4"></circle>
+          </svg>
+          Pengaturan Profil
+        </button>
+      </li>
+
       <li class="menu-item">
         <a href="/" target="_blank" rel="noopener noreferrer">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -31,8 +40,9 @@
           Lihat Website
         </a>
       </li>
+
       <li class="menu-item menu-item-logout" id="btn-admin-logout" style="margin-top:auto;">
-        <button>
+        <button type="button">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
             <polyline points="16 17 21 12 16 7"></polyline>
@@ -44,9 +54,7 @@
     </ul>
   </aside>
 
-  <!-- Main administrative panel interface -->
   <main class="admin-content">
-    <!-- Panel Top Header Bar -->
     <header class="admin-header">
       <div>
         <h1 style="font-size: 1.75rem; text-transform: uppercase; font-weight:800; letter-spacing: -0.01em;">Kelola Unit BimzCam</h1>
@@ -61,7 +69,6 @@
       </div>
     </header>
 
-    <!-- Dynamic Numeric Metric Cards Row -->
     <section class="metrics-grid">
       <div class="metric-card">
         <div class="metric-info">
@@ -109,14 +116,12 @@
       </div>
     </section>
 
-    <!-- Main CRUD Equipment Table Segment -->
     <section class="crud-container">
       <div class="section-header-row">
         <div>
           <h2 style="font-size: 1.3rem; font-weight:800; text-transform: uppercase;">Daftar Unit Katalog BimzCam</h2>
           <p style="color:var(--text-secondary); font-size:0.85rem; margin-top:0.25rem;">Semua perubahan yang disimpan akan langsung mengubah katalog sewa & jual di Beranda publik</p>
         </div>
-        <!-- Trigger Add Modal Button -->
         <button class="btn-primary" id="btn-add-product" style="padding: 0.6rem 1.2rem; font-size: 0.85rem; border-radius: 8px;">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
             <line x1="12" y1="5" x2="12" y2="19"></line>
@@ -126,7 +131,6 @@
         </button>
       </div>
 
-      <!-- Inventory Table -->
       <div class="table-wrapper">
         <table>
           <thead>
@@ -153,7 +157,6 @@
   </main>
 </div>
 
-<!-- ADD & EDIT DYNAMIC MODAL (MULTIPART FORM) -->
 <div class="modal" id="crud-modal">
   <div class="modal-content">
     <div class="modal-header">
@@ -214,9 +217,41 @@
     </form>
   </div>
 </div>
+
+<div class="modal" id="profile-modal">
+  <div class="modal-content" style="max-width: 450px;">
+    <div class="modal-header">
+      <h3>Pengaturan Akun Admin</h3>
+      <span class="btn-close-modal" id="close-profile-modal">&times;</span>
+    </div>
+    <form id="profile-form">
+      <div class="modal-body" style="display:flex; flex-direction:column; gap:1.2rem;">
+        <div class="form-group">
+          <label for="profile-username">Username Baru *</label>
+          <input type="text" id="profile-username" placeholder="Masukkan username admin baru" required />
+        </div>
+        <div class="form-group">
+          <label for="profile-password">Password Baru</label>
+          <input type="password" id="profile-password" placeholder="Kosongkan jika tidak ingin ganti password" minlength="4" />
+          <small style="color:var(--text-secondary); font-size:0.72rem; margin-top:0.25rem; display:block;">
+            * Jika diisi, password otomatis diamankan menggunakan enkripsi internal pada backend admin.py.
+          </small>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn-secondary" id="btn-cancel-profile" style="padding: 0.6rem 1.2rem; font-size: 0.85rem;">Batal</button>
+        <button type="submit" class="btn-primary" style="padding: 0.6rem 1.2rem; font-size: 0.85rem; background-color: #10B981; color: white;">
+          Perbarui Profil
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
 {% endblock %}
 
 {% block scripts %}
-<!-- Link admin.js action controller -->
 <script src="{{ url_for('static', filename='js/admin.js') }}"></script>
 {% endblock %}
