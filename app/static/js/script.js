@@ -28,13 +28,13 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // 2. Fetch Profil data & Populate
-  let whatsappNumber = "6281234567890"; // default fallback
+  let whatsappNumber = "6285158801421"; // default fallback
 
   fetch("/api/profil")
     .then((res) => res.json())
     .then((data) => {
       if (data) {
-        whatsappNumber = data.whatsapp || "6281234567890";
+        whatsappNumber = data.whatsapp || "6285158801421";
         
         // Update elements
         document.querySelectorAll(".rental-nama").forEach(el => el.textContent = data.nama);
