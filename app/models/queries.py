@@ -4,18 +4,26 @@ Database murni SQL queries for BimzCam.
 No ORM, pure PyMySQL with params binding.
 """
 
+import os
 import pymysql
 from flask import current_app
 
 def get_db_connection():
-    """Membuka koneksi manual ke database MySQL murni berdasarkan konfigurasi aplikasi"""
+    """Membuka koneksi manual ke database MySQL murni berdasarkan konfigurasi aplikasi dengan dukungan SSL"""
+    
+    # Deteksi lingkungan Cloud/Vercel untuk menyisipkan konfigurasi SSL wajib Aiven
+    ssl_config = None
+    if os.environ.get('VERCEL') or os.environ.get('DB_HOST'):
+        ssl_config = {'ssl_mode': 'REQUIRED'}
+
     return pymysql.connect(
         host=current_app.config['MYSQL_HOST'],
         user=current_app.config['MYSQL_USER'],
         password=current_app.config['MYSQL_PASSWORD'],
         database=current_app.config['MYSQL_DB'],
         port=int(current_app.config.get('MYSQL_PORT', 3310)),
-        cursorclass=pymysql.cursors.DictCursor
+        cursorclass=pymysql.cursors.DictCursor,
+        ssl=ssl_config # Mengaktifkan SSL handshake aman
     )
 
 def get_profil(connection):
@@ -108,11 +116,15 @@ def get_user_by_username(connection, username):
         return cursor.fetchone()
 
 def ensure_default_admin(connection, hashed_password):
-    """Mengecek bila tabel users kosong lalu men-seed admin default"""
+    """Mengecek bila tabel users kosong lalu men-seed admin default (Safe Mode)"""
     with connection.cursor() as cursor:
-        cursor.execute("SELECT COUNT(*) as count FROM users")
-        if cursor.fetchone()['count'] == 0:
-            cursor.execute("INSERT INTO users (username, password_hash) VALUES (%s, %s)", ('admin', hashed_password))
-            connection.commit()
-            return True
+        try:
+            cursor.execute("SELECT COUNT(*) as count FROM users")
+            if cursor.fetchone()['count'] == 0:
+                cursor.execute("INSERT INTO users (username, password_hash) VALUES (%s, %s)", ('admin', hashed_password))
+                connection.commit()
+                return True
+        except Exception as e:
+            # Mengamankan aplikasi agar tidak crash jika tabel database fisik belum diinjeksi
+            print("[Seeder Info] Tabel users belum siap atau belum dibuat di Aiven:", e)
     return False
