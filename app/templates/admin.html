@@ -1,0 +1,222 @@
+{% extends "base.html" %}
+
+{% block title %}Administrator Panel - BimzCam{% endblock %}
+
+{% block content %}
+<!-- Full-Page Admin Sidebar Layout -->
+<div class="admin-layout" style="display:flex;">
+  <!-- Left sidebar navigation drawer -->
+  <aside class="sidebar">
+    <a href="/" class="sidebar-logo">
+      BimzCam <span>Admin</span>
+    </a>
+    <ul class="sidebar-menu">
+      <li class="menu-item active">
+        <button>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="7" height="9"></rect>
+            <rect x="14" y="3" width="7" height="5"></rect>
+            <rect x="14" y="12" width="7" height="9"></rect>
+            <rect x="3" y="16" width="7" height="5"></rect>
+          </svg>
+          Kelola Produk
+        </button>
+      </li>
+      <li class="menu-item">
+        <a href="/" target="_blank" rel="noopener noreferrer">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+            <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+          </svg>
+          Lihat Website
+        </a>
+      </li>
+      <li class="menu-item menu-item-logout" id="btn-admin-logout" style="margin-top:auto;">
+        <button>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+            <polyline points="16 17 21 12 16 7"></polyline>
+            <line x1="21" y1="12" x2="9" y2="12"></line>
+          </svg>
+          Keluar Sesi
+        </button>
+      </li>
+    </ul>
+  </aside>
+
+  <!-- Main administrative panel interface -->
+  <main class="admin-content">
+    <!-- Panel Top Header Bar -->
+    <header class="admin-header">
+      <div>
+        <h1 style="font-size: 1.75rem; text-transform: uppercase; font-weight:800; letter-spacing: -0.01em;">Kelola Unit BimzCam</h1>
+        <p style="color: var(--text-secondary); margin-top: 0.25rem;">Kelola unit kamera pocket digicam, strap aksesoris, upload katalog jualan & sewa</p>
+      </div>
+      <div class="admin-user-info">
+        <div class="admin-avatar">B</div>
+        <div>
+          <strong style="display:block; font-size:0.95rem;">Administrator</strong>
+          <small style="color:var(--text-secondary); font-size:0.75rem;">BimzCam Solo Office</small>
+        </div>
+      </div>
+    </header>
+
+    <!-- Dynamic Numeric Metric Cards Row -->
+    <section class="metrics-grid">
+      <div class="metric-card">
+        <div class="metric-info">
+          <h4>Total Produk</h4>
+          <span class="metric-number" id="metrics-products-count">0</span>
+        </div>
+        <div class="metric-icon-box">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+            <circle cx="12" cy="13" r="4"></circle>
+          </svg>
+        </div>
+      </div>
+
+      <div class="metric-card">
+        <div class="metric-info">
+          <h4>Total Ulasan</h4>
+          <span class="metric-number" id="metrics-reviews-count">0</span>
+        </div>
+        <div class="metric-icon-box" style="color: var(--accent-yellow)">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+          </svg>
+        </div>
+      </div>
+
+      <div class="metric-card">
+        <div class="metric-info">
+          <h4>Kategori Produk</h4>
+          <span class="metric-number" id="metrics-categories-count">0</span>
+        </div>
+        <div class="metric-icon-box" style="color: #10B981">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="4" y1="21" x2="4" y2="14"></line>
+            <line x1="4" y1="10" x2="4" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="12"></line>
+            <line x1="12" y1="8" x2="12" y2="3"></line>
+            <line x1="20" y1="21" x2="20" y2="16"></line>
+            <line x1="20" y1="12" x2="20" y2="3"></line>
+            <line x1="1" y1="14" x2="7" y2="14"></line>
+            <line x1="9" y1="8" x2="15" y2="8"></line>
+            <line x1="17" y1="16" x2="23" y2="16"></line>
+          </svg>
+        </div>
+      </div>
+    </section>
+
+    <!-- Main CRUD Equipment Table Segment -->
+    <section class="crud-container">
+      <div class="section-header-row">
+        <div>
+          <h2 style="font-size: 1.3rem; font-weight:800; text-transform: uppercase;">Daftar Unit Katalog BimzCam</h2>
+          <p style="color:var(--text-secondary); font-size:0.85rem; margin-top:0.25rem;">Semua perubahan yang disimpan akan langsung mengubah katalog sewa & jual di Beranda publik</p>
+        </div>
+        <!-- Trigger Add Modal Button -->
+        <button class="btn-primary" id="btn-add-product" style="padding: 0.6rem 1.2rem; font-size: 0.85rem; border-radius: 8px;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="12" y1="5" x2="12" y2="19"></line>
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+          </svg>
+          Tambah Katalog Baru
+        </button>
+      </div>
+
+      <!-- Inventory Table -->
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th style="width: 50px;">No</th>
+              <th style="width: 90px;">Gambar</th>
+              <th>Nama Produk & Aksesoris</th>
+              <th style="width: 90px;">Tipe</th>
+              <th style="width: 140px;">Kategori</th>
+              <th style="width: 160px;">Tarif / Harga</th>
+              <th style="width: 150px; text-align: center;">Aksi</th>
+            </tr>
+          </thead>
+          <tbody id="admin-products-tbody">
+            <tr>
+              <td colspan="7" class="text-center" style="padding: 2rem; color:var(--text-secondary);">
+                Sedang memuat data dari database BimzCam...
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+</div>
+
+<!-- ADD & EDIT DYNAMIC MODAL (MULTIPART FORM) -->
+<div class="modal" id="crud-modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3 id="modal-title">Tambah Produk Baru</h3>
+      <span class="btn-close-modal">&times;</span>
+    </div>
+
+    <form id="crud-form">
+      <div class="modal-body" style="display:flex; flex-direction:column; gap:1.2rem;">
+        <input type="hidden" id="existing-gambar-url" name="existing_gambar" />
+
+        <div class="form-group">
+          <label for="form-nama">Nama Unit / Aksesoris *</label>
+          <input type="text" id="form-nama" name="nama_produk" placeholder="Contoh: Canon IXY Digital 930 IS" required />
+        </div>
+
+        <div class="form-group">
+          <label for="form-tipe">Tipe Ketersediaan *</label>
+          <select id="form-tipe" name="tipe" required>
+            <option value="Sewa">Sewa (Rental Harian)</option>
+            <option value="Jual">Jual (Dijual / Pembelian)</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="form-kategori">Kategori Alat *</label>
+          <select id="form-kategori" name="kategori_id" required>
+            <option value="">-- Pilih Kategori --</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="form-harga">Harga Jual / Tarif Sewa (Rupiah) *</label>
+          <input type="number" id="form-harga" name="harga_per_hari" placeholder="Contoh: Sewa Harian: 80000 atau Harga Jual: 1450000" min="1" required />
+        </div>
+
+        <div class="form-group">
+          <label for="form-deskripsi">Deskripsi & Spesifikasi Produk *</label>
+          <textarea id="form-deskripsi" name="deskripsi" placeholder="Masukkan kelengkapan unit, kondisi fisik, sensor, batre, cara pakai dsb." rows="4" required style="resize:vertical;"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="form-gambar">Unggah Gambar Produk (JPG/PNG)</label>
+          <input type="file" id="form-gambar" name="gambar" accept="image/png, image/jpeg, image/jpg, image/webp" />
+          <small style="color:var(--text-secondary); font-size:0.75rem; margin-top:0.25rem;">Kosongkan jika tidak ingin mengubah/tetap menggunakan gambar default</small>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn-secondary" id="btn-cancel-modal" style="padding: 0.6rem 1.2rem; font-size: 0.85rem;">Batal</button>
+        <button type="submit" class="btn-primary" style="padding: 0.6rem 1.2rem; font-size: 0.85rem; background-color: var(--accent-yellow); color: var(--bg-main);">
+          Simpan Produk
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<!-- Link admin.js action controller -->
+<script src="{{ url_for('static', filename='js/admin.js') }}"></script>
+{% endblock %}
