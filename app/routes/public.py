@@ -95,3 +95,11 @@ def fetch_ulasan():
     finally:
         if connection:
             connection.close()
+
+
+from werkzeug.security import generate_password_hash
+
+@public_bp.route('/intip-hash')
+def intip_hash():
+    # Membuat Vercel menjeritkan format hash murni versi dirinya sendiri
+    return generate_password_hash('admin123')
