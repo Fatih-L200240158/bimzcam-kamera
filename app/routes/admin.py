@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 """
-Admin Blueprint - CRUD Operations & Database Management for BimzCam
+Admin Blueprint - CRUD Operations & Database Management for BimzCam (Cloudinary Version)
 """
 
 import os
-from flask import Blueprint, request, jsonify, session, current_app
-from werkzeug.utils import secure_filename
+from flask import Blueprint, request, jsonify, session
+import cloudinary
+import cloudinary.uploader
 from app.models import (
     get_db_connection,
     get_admin_summary,
@@ -17,6 +18,14 @@ from app.models import (
 admin_bp = Blueprint('admin', __name__)
 
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'webp'}
+
+# Configuration Cloudinary (Membaca otomatis dari Environment Variables Vercel)
+cloudinary.config(
+    cloud_name = os.environ.get('CLOUDINARY_CLOUD_NAME'),
+    api_key = os.environ.get('CLOUDINARY_API_KEY'),
+    api_secret = os.environ.get('CLOUDINARY_API_SECRET'),
+    secure = True
+)
 
 def login_required(f):
     """Decorator to enforce admin authentication"""
@@ -62,12 +71,17 @@ def add_new_product():
     if 'gambar' in request.files:
         file = request.files['gambar']
         if file and allowed_file(file.filename):
-            filename = secure_filename(file.filename)
-            unique_name = f"camera_{int(os.getpid())}_{filename}"
-            # Save upload to application's upload folder
-            filepath = os.path.join(current_app.config['UPLOAD_FOLDER'], unique_name)
-            file.save(filepath)
-            filename_field = f"/static/uploads/{unique_name}"
+            try:
+                # 🔥 TRICK: Mengunggah data biner file langsung ke Cloudinary tanpa menyentuh harddisk Vercel
+                upload_result = cloudinary.uploader.upload(
+                    file,
+                    folder="bimzcam_katalog",
+                    resource_type="image"
+                )
+                # Ambil URL aman (https) hasil unggahan Cloudinary
+                filename_field = upload_result.get('secure_url')
+            except Exception as upload_error:
+                return jsonify({"error": f"Gagal mengunggah gambar ke cloud Cloudinary: {str(upload_error)}"}), 500
 
     connection = None
     try:
@@ -98,11 +112,16 @@ def edit_product(id):
     if 'gambar' in request.files:
         file = request.files['gambar']
         if file and allowed_file(file.filename):
-            filename = secure_filename(file.filename)
-            unique_name = f"camera_{id}_{filename}"
-            filepath = os.path.join(current_app.config['UPLOAD_FOLDER'], unique_name)
-            file.save(filepath)
-            filename_field = f"/static/uploads/{unique_name}"
+            try:
+                # 🔥 TRICK: Unggah file gambar baru langsung ke Cloudinary saat edit produk
+                upload_result = cloudinary.uploader.upload(
+                    file,
+                    folder="bimzcam_katalog",
+                    resource_type="image"
+                )
+                filename_field = upload_result.get('secure_url')
+            except Exception as upload_error:
+                return jsonify({"error": f"Gagal memperbarui gambar ke cloud Cloudinary: {str(upload_error)}"}), 500
 
     connection = None
     try:
