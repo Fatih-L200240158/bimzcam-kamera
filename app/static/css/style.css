@@ -1522,6 +1522,9 @@ tr:hover td {
 .mb-2 { margin-bottom: 0.5rem; }
 
 /* Mobile Menu overlay styling */
+/* ========================================================
+   1. MEDIA QUERY: LAPTOP KECIL / TABLET (MAX-WIDTH: 768px)
+   ======================================================== */
 @media (max-width: 768px) {
   .hero {
     grid-template-columns: 1fr;
@@ -1556,10 +1559,30 @@ tr:hover td {
     gap: 3rem;
   }
 
-  .burger {
-    display: flex;
+  /* --- SINKRONISASI NAVBAR MOBILE --- */
+  /* Jaga wadah pembungkus utama header agar elemennya tidak saling tabrakan */
+  .nav-container, .header-container, .nav-wrapper {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 1rem !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
   }
 
+  /* Perkecil ukuran font judul brand di header agar tidak memakan ruang */
+  .logo-text, .brand-title, header h1, nav h1 {
+    font-size: 1.25rem !important;
+    line-height: 1.2 !important;
+    white-space: nowrap;
+  }
+
+  .burger {
+    display: flex;
+    order: 3; /* Memaksa tombol hamburger selalu berada di paling kanan */
+  }
+
+  /* Struktur Nav Menu Dropdown */
   nav {
     position: fixed;
     top: 64px;
@@ -1600,11 +1623,18 @@ tr:hover td {
     padding: 0.85rem 0;
   }
 
-  .nav-wrapper .btn-contact {
-    width: 100%;
-    justify-content: center;
-    padding: 1rem;
-    font-size: 1rem;
+  /* SOLUSI TOMBOL WA: Amankan letaknya di dalam baris flex, bukan melayang liar */
+  .nav-wrapper .btn-contact,
+  .btn-whatsapp {
+    position: static !important; /* Cabut posisi absolut yang merusak layout */
+    width: auto !important; /* Jangan dipaksa 100% lebar layar penuh agar muat di header */
+    display: flex !important;
+    align-items: center !important;
+    padding: 0.55rem 0.9rem !important; /* Ukuran tombol dirampingkan */
+    font-size: 0.8rem !important;
+    white-space: nowrap !important;
+    order: 2; /* Diletakkan rapi di antara logo dan tombol hamburger */
+    border-radius: 6px !important;
   }
 
   /* Admin mobile responsiveness */
@@ -1642,5 +1672,44 @@ tr:hover td {
     display: block;
     overflow-x: auto;
     white-space: nowrap;
+  }
+}
+
+/* ========================================================
+   2. MEDIA QUERY: KHUSUS SMARTPHONE / HP (MAX-WIDTH: 480px)
+   ======================================================== */
+@media (max-width: 480px) {
+  /* Perkecil teks headline landing page agar tidak terpotong patah */
+  .hero-content h1 {
+    font-size: 1.75rem;
+  }
+  
+  /* Perkecil judul BimzCam di header khusus untuk layar HP sempit */
+  .logo-text, .brand-title, header h1, nav h1, .sidebar-logo {
+    font-size: 1.05rem !important;
+    letter-spacing: -0.02em;
+  }
+
+  /* Rampingkan padding pembungkus header agar ruang layar efisien */
+  .nav-container, .header-container {
+    padding: 0.8rem 1rem !important;
+  }
+
+  /* Tombol WhatsApp dibuat mini di layar HP 480px */
+  .nav-wrapper .btn-contact,
+  .btn-whatsapp {
+    padding: 0.45rem 0.7rem !important;
+    font-size: 0.72rem !important;
+    gap: 0.3rem !important;
+  }
+
+  /* Modifikasi ukuran teks tabel admin agar tidak terlalu melar saat di-scroll */
+  th, td {
+    padding: 0.6rem 0.5rem;
+    font-size: 0.75rem;
+  }
+  
+  .admin-header h1 {
+    font-size: 1.3rem !important;
   }
 }
