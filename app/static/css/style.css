@@ -1562,18 +1562,18 @@ tr:hover td {
   /* --- SINKRONISASI NAVBAR MOBILE --- */
   /* Jaga wadah pembungkus utama header agar elemennya tidak saling tabrakan */
   .nav-container, .header-container, .nav-wrapper {
-    display: flex !important;
-    align-items: center !important;
-    justify-content: space-between !important;
-    gap: 1rem !important;
-    width: 100% !important;
-    box-sizing: border-box !important;
+    display: flex;
+    align-items: center ;
+    justify-content: space-between;
+    gap: 1rem;
+    width: 100% ;
+    box-sizing: border-box ;  
   }
 
   /* Perkecil ukuran font judul brand di header agar tidak memakan ruang */
   .logo-text, .brand-title, header h1, nav h1 {
-    font-size: 1.25rem !important;
-    line-height: 1.2 !important;
+    font-size: 1.25rem ;
+    line-height: 1.2 ;
     white-space: nowrap;
   }
 
@@ -1626,15 +1626,7 @@ tr:hover td {
   /* SOLUSI TOMBOL WA: Amankan letaknya di dalam baris flex, bukan melayang liar */
   .nav-wrapper .btn-contact,
   .btn-whatsapp {
-    position: static !important; /* Cabut posisi absolut yang merusak layout */
-    width: auto !important; /* Jangan dipaksa 100% lebar layar penuh agar muat di header */
-    display: flex !important;
-    align-items: center !important;
-    padding: 0.55rem 0.9rem !important; /* Ukuran tombol dirampingkan */
-    font-size: 0.8rem !important;
-    white-space: nowrap !important;
-    order: 2; /* Diletakkan rapi di antara logo dan tombol hamburger */
-    border-radius: 6px !important;
+    display: none;
   }
 
   /* Admin mobile responsiveness */
@@ -1693,14 +1685,6 @@ tr:hover td {
   /* Rampingkan padding pembungkus header agar ruang layar efisien */
   .nav-container, .header-container {
     padding: 0.8rem 1rem !important;
-  }
-
-  /* Tombol WhatsApp dibuat mini di layar HP 480px */
-  .nav-wrapper .btn-contact,
-  .btn-whatsapp {
-    padding: 0.45rem 0.7rem !important;
-    font-size: 0.72rem !important;
-    gap: 0.3rem !important;
   }
 
   /* Modifikasi ukuran teks tabel admin agar tidak terlalu melar saat di-scroll */
